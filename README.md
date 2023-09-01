@@ -12,10 +12,9 @@ docker build  -t php-symfony-apache:8.1.19 --build-arg PHP_BUILD_VERSION=8.1.19 
 
 # Improuvements : 
 
-Might be better to use a `Makefile` or a `.sh` to build the docker file.
-Somethink like `./builder FULL_PHP_VERSION=8.1.19`
-And the script will do somethink like : 
-
+Might be better to use a `Makefile` or a `.sh` to build the docker file.   
+Somethink like `./builder FULL_PHP_VERSION=8.1.19`   
+And the script will do somethink like :    
 ```sh
 # Vérifier si le premier argument est vide
 if [ -z "$1" ]; then
@@ -30,13 +29,13 @@ docker build --build-arg ${DOCKER_ARG_PHP_IMAGE_VERSION} --build-arg ${DOCKER_AR
 # Will result in : 
 docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=8.1.19
 ```
-> This script can be usefull because we can't parse Variable in a Dockerfile, so the script is used to only give 1 arguments (AKA FULL_PHP_VERSION)
-> The script will parse the FULL_PHP_VERSION and exctract <PHP_IMAGE_TAG_VERSION> used for the FROM php-${PHP_IMAGE_TAG_VERSION}
+> This script can be usefull because we can't parse Variable in a Dockerfile, so the script is used to only give 1 arguments (AKA FULL_PHP_VERSION)   
+> The script will parse the FULL_PHP_VERSION and exctract <PHP_IMAGE_TAG_VERSION> used for the FROM php-${PHP_IMAGE_TAG_VERSION}   
 
 
 # Issues : 
-Not possible to parse variable in the dockerfile. 
-I wanted to only give one variable with `--build-arg FULL_BUILD_VERSION=8.1.19`, and do : 
+Not possible to parse variable in the dockerfile.    
+I wanted to only give one variable with `--build-arg FULL_BUILD_VERSION=8.1.19`, and do :    
 ```Dockerfile
 RUN PHP_IMAGE_VERSION=$(echo "$PHP_BUILD_VERSION" | cut -d. -f1,2) && \
     export PHP_IMAGE_VERSION && \
@@ -44,6 +43,6 @@ RUN PHP_IMAGE_VERSION=$(echo "$PHP_BUILD_VERSION" | cut -d. -f1,2) && \
 # To use like so : 
 FROM php:${PHP_IMAGE_VERSION}
 ```
-But it doesn work because : 
-Each RUN statement in a Dockerfile is run in a separate shell. So once a statement is done, all environment variables are lost. Even if they are exported.
-So we can't parse FULL_PHP_VERSION to get only Major.Minor
+But it doesn work because :    
+Each RUN statement in a Dockerfile is run in a separate shell. So once a statement is done, all environment variables are lost. Even if they are exported.   
+So we can't parse FULL_PHP_VERSION to get only Major.Minor   
