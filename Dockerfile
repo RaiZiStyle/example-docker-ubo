@@ -1,7 +1,7 @@
 # Needed before the from in order to be used by the `FROM`
-ARG FULL_PHP_VERSION
-ARG PHP_IMAGE_TAG_VERSION
-ARG SYMFONY_VERSION
+ARG FULL_PHP_VERSION=-1
+ARG PHP_IMAGE_TAG_VERSION=-1
+ARG SYMFONY_VERSION=-1
 
 # Used to test if variable is set via --build-arg
 # Can't run `RUN` without a from.
@@ -10,20 +10,22 @@ FROM debian:12-slim as DEBIAN_BUILD
 LABEL maintainer="arthur.guyotpremel@gmail.com"
 
 # Check if full version of php is set
-RUN if [ -z "$FULL_PHP_VERSION" ]; then echo "Set PHP_BUILD_VERSION in docker build-args like --build-arg FULL_PHP_VERSION=<Major.Minor.bugFix>" && exit 2; \
+# FIXME: I don't understand why this doesn't work
+RUN if [ "$FULL_PHP_VERSION" == "-1" ]; then echo "Set PHP_BUILD_VERSION in docker build-args like --build-arg FULL_PHP_VERSION=<Major.Minor.bugFix>" && exit 2; \
     else echo "FULL_PHP_VERSION is set"; \
     fi
 
 # Check if image version of php is set
-RUN if [ -z "$PHP_IMAGE_TAG_VERSION" ]; then echo "Set PHP_IMAGE_TAG_VERSION in docker build-args like --build-arg PHP_IMAGE_TAG_VERSION=<Major.Minor>" && exit 2; \
+RUN if [ "$PHP_IMAGE_TAG_VERSION" == "-1" ]; then echo "Set PHP_IMAGE_TAG_VERSION in docker build-args like --build-arg PHP_IMAGE_TAG_VERSION=<Major.Minor>" && exit 2; \
     else echo "PHP_IMAGE_TAG_VERSION is set"; \
     fi
 
 # Check if full version of php is set
-RUN if [ -z "$SYMFONY_VERSION" ]; then echo "Set SYMFONY_VERSION in docker build-args like --build-arg SYMFONY_VERSION=<Major.Minor>" && exit 2; \
+RUN if [ "${SYMFONY_VERSION}" == "-1" ]; then echo "Set SYMFONY_VERSION in docker build-args like --build-arg SYMFONY_VERSION=<Major.Minor>" && exit 2; \
     else echo "SYMFONY_VERSION is set"; \
     fi
 
+# FIXME: Doesn always show...
 RUN  echo  "FULL php version is : $FULL_PHP_VERSION"
 RUN echo "PHP version for tag is : $PHP_IMAGE_TAG_VERSION"
 RUN echo "Symfony version for tag is : $SYMFONY_VERSION"

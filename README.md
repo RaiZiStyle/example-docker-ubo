@@ -52,9 +52,15 @@ docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=
 Might be better to change it. We might need an other arg in the `Builder.sh` to do so.
 > COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-
-
 3. [x] Make an option for --no-cache for docker
+
+4. [ ] Might be usless to check variable in dockerfile because it doesn't work like intended (See `test/dockerfile_sdk` for full example)
+> it's so weird...
+```bash
+docker build   --build-arg BUILD_ARGUMENT_ENV=dev --file test/dockerfile_sdk_issue .  --no-cache # Doesnt work
+docker build   --build-arg BUILD_ARGUMENT_ENV=dev --file test/dockerfile_sdk_work .  --no-cache # Work
+```
+> it's the same dockerfile, exp
 
 # Issues : 
 Not possible to parse variable in the dockerfile.    
@@ -71,12 +77,14 @@ Each RUN statement in a Dockerfile is run in a separate shell. So once a stateme
 So we can't parse FULL_PHP_VERSION to get only Major.Minor   
 
 
-BuildKit is the builder for docker.     
+4. [ ] BuildKit is the builder for docker.     
 > BuildKit only builds the stages that the target stage depends on.     
 
 So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
 
-We can trick the builder to force the specific stage to build, AKAK DEBIAN_BUILD from `FROM debian:12-slim as DEBIAN_BUILD`. So we build like so `docker build --target DEBIAN_BUILD`.
-Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but : 
+> We can trick the builder to force the specific stage to build, AKAK DEBIAN_BUILD from `FROM debian:12-slim as DEBIAN_BUILD`. So we build like so `docker build --target DEBIAN_BUILD`.    
+>> :warning: This doesn't fully work because it only limit to the target, and don't do the other `FROM`
+
+> Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but : 
 > The legacy builder is deprecated and will be removed in a future release.     
 > BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable.     
