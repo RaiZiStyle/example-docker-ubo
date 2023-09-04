@@ -76,12 +76,13 @@ RUN PHP_IMAGE_VERSION=$(echo "$PHP_BUILD_VERSION" | cut -d. -f1,2) && \
 FROM php:${PHP_IMAGE_VERSION}
 ```
 But it doesn work because :    
-Each RUN statement in a Dockerfile is run in a separate shell. So once a statement is done, all environment variables are lost. Even if they are exported.   
+> Each RUN statement in a Dockerfile is run in a separate shell. So once a statement is done, all environment variables are lost. Even if they are exported.    
+
 So we can't parse FULL_PHP_VERSION to get only Major.Minor   
 
 </br>
 
-2. `BuildKit` is the builder for docker.     
+1. `BuildKit` is the builder for docker.     
 > **BuildKit only builds the stages that the target stage depends on.**     
 
 So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
