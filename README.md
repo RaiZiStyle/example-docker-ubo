@@ -2,14 +2,14 @@
 
 Without the builder
 ```bash
-docker build -t php-symfony-apache:8.1.19 --build-arg FULL_PHP_VERSION=8.1.19  --build-arg PHP_IMAGE_VERSION=8.1 . # Build for php version 8.2.1
-docker build  -t php-symfony-apache:8.1.19 --build-arg PHP_BUILD_VERSION=8.1.19 . --no-cache # Build for php version 8.1.19
+docker build -t php-symfony-apache:8.1.19 --build-arg FULL_PHP_VERSION=8.1.19  --build-arg PHP_IMAGE_VERSION=8.1 --build-arg SYMFONY_VERSION=6.1 . # Build for php version 8.2.1
+docker build  -t php-symfony-apache:8.1.19 --build-arg PHP_BUILD_VERSION=8.1.19 --build-arg PHP_IMAGE_VERSION=8.1 --build-arg SYMFONY_VERSION=6.1 . --no-cache # Build for php version 8.1.19
 ```
 
 With the builder : 
 ```bash
-./builder.sh -p 8.1.19
-./builder.sh --php-full-version=8.1.19 
+./builder.sh -p 8.1.19 -s 6.2
+./builder.sh --php-full-version=8.1.19 --symfony-version=6.2
 ./builder.sh -h # Show Help
 ```
 
