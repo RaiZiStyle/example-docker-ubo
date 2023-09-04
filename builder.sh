@@ -86,4 +86,5 @@ sleep 1
 echo "${GREEN}Build commande : #docker build --target DEBIAN_BUILD ${CACHE} -t php-symfony-apache:${FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_PHP_IMAGE_VERSION} --build-arg ${DOCKER_ARG_SYMFONY_VERSION} . ${GREEN}"
 
 set -x
-docker build --target DEBIAN_BUILD ${CACHE} -t php-symfony-apache:"${FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_PHP_IMAGE_VERSION}" --build-arg "${DOCKER_ARG_SYMFONY_VERSION}" .
+docker build ${CACHE} -t php-symfony-apache:"${FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_PHP_IMAGE_VERSION}" --build-arg "${DOCKER_ARG_SYMFONY_VERSION}" .
+# docker build --target DEBIAN_BUILD ${CACHE} -t php-symfony-apache:"${FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_PHP_IMAGE_VERSION}" --build-arg "${DOCKER_ARG_SYMFONY_VERSION}" .

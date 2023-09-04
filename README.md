@@ -82,7 +82,7 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 </br>
 
-1. `BuildKit` is the builder for docker.     
+2. `BuildKit` is the builder for docker.     
 > **BuildKit only builds the stages that the target stage depends on.**     
 
 So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
@@ -92,7 +92,14 @@ So if we build as usual, `BuildKit` will see that the `FROM debian` is not usefu
 
 > **Solution 2 :** Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but : 
 > The legacy builder is deprecated and will be removed in a future release.     
-> BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable.     
+> BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable. 
+
+> **Solution 3 : ** Remove the checking variable in the dockerfile.
+
+
+
+**Workaround** : We might be able to use the `COPY --from=`. 
+
 
 </br>
 
