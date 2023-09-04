@@ -21,10 +21,12 @@ With the builder :
 - [x] Create dynamic env variable
   - Use via `ENV PHP_VERSION=${FULL_PHP_VERSION}` and $FULL_PHP_VERSION is given as a docker build arg (--build-arg FULL_PHP_VERSION=8.1.19)    
 - [x] Make `FROM php-xx` to use the var parsed
+- [ ] Make the image work with `Symfony`
+- [ ] Verify if the file used by `systemsdk/docker-apache-php-symfony` are correct. (file in `docker/*`)
 
 # Improuvements : 
 
-1. Might be better to use a `Makefile` or a `.sh` to build the `Dockerfile` since we can't parse variable in the `Dockerfile`
+1. [x] Might be better to use a `Makefile` or a `.sh` to build the `Dockerfile` since we can't parse variable in the `Dockerfile`
 Somethink like `./builder FULL_PHP_VERSION=8.1.19`   
 And the script will do somethink like :    
 ```sh
@@ -45,6 +47,15 @@ docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=
 > The script will parse the FULL_PHP_VERSION and exctract <PHP_IMAGE_TAG_VERSION> used for the FROM php-${PHP_IMAGE_TAG_VERSION}   
 
 
+
+2. [ ] Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
+Might be better to change it. We might need an other arg in the `Builder.sh` to do so.
+> COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+
+
+3. [ ] Make an option for --no-cache for docker
+
 # Issues : 
 Not possible to parse variable in the dockerfile.    
 I wanted to only give one variable with `--build-arg FULL_BUILD_VERSION=8.1.19`, and do :    
@@ -58,3 +69,9 @@ FROM php:${PHP_IMAGE_VERSION}
 But it doesn work because :    
 Each RUN statement in a Dockerfile is run in a separate shell. So once a statement is done, all environment variables are lost. Even if they are exported.   
 So we can't parse FULL_PHP_VERSION to get only Major.Minor   
+
+
+BuildKit is the builder for docker.   
+> BuildKit only builds the stages that the target stage depends on. 
+
+So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly
