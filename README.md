@@ -54,7 +54,7 @@ Might be better to change it. We might need an other arg in the `Builder.sh` to 
 
 
 
-3. [ ] Make an option for --no-cache for docker
+3. [x] Make an option for --no-cache for docker
 
 # Issues : 
 Not possible to parse variable in the dockerfile.    
@@ -71,7 +71,12 @@ Each RUN statement in a Dockerfile is run in a separate shell. So once a stateme
 So we can't parse FULL_PHP_VERSION to get only Major.Minor   
 
 
-BuildKit is the builder for docker.   
-> BuildKit only builds the stages that the target stage depends on. 
+BuildKit is the builder for docker.     
+> BuildKit only builds the stages that the target stage depends on.     
 
-So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly
+So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
+
+We can trick the builder to force the specific stage to build, AKAK DEBIAN_BUILD from `FROM debian:12-slim as DEBIAN_BUILD`. So we build like so `docker build --target DEBIAN_BUILD`.
+Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but : 
+> The legacy builder is deprecated and will be removed in a future release.     
+> BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable.     

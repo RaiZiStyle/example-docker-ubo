@@ -6,8 +6,8 @@ GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
 BLUE=$(tput setaf 4)
 
-SHORT=p:s:h
-LONG=php-full-version:,symfony-version:,help
+SHORT=p:s:c::h
+LONG=php-full-version:symfony-version:no-cache::help
 OPTS=$(getopt -a -n builder.sh --options $SHORT --longoptions $LONG -- "$@")
 if [ $? -ne 0 ]; then
   # L'appel à getopt a échoué, cela signifie que des options non valides ont été fournies
@@ -27,10 +27,16 @@ usage() {
 
 }
 
+CACHE=""
+
 while :; do
   case "$1" in
   -p | --php-full-version)
     FULL_PHP_VERSION="$2"
+    shift 2
+    ;;
+  -c | --no-cache)
+    CACHE="--no-cache"
     shift 2
     ;;
   -s | --symfony-version)
@@ -71,7 +77,13 @@ echo "${YELLOW}Full version of php : v${FULL_PHP_VERSION} ${YELLOW}"
 echo "${YELLOW}Tag version of php image : php:${PHP_IMAGE_VERSION}-apache ${YELLOW}"
 echo "${YELLOW}Symfony version : v${SYMFONY_VERSION}-apache ${YELLOW}"
 
-echo "${GREEN}Build commande : #docker build -t php-symfony-apache:${FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_PHP_IMAGE_VERSION} --build-arg ${DOCKER_ARG_SYMFONY_VERSION} . ${GREEN}"
+if [ ${CACHE} ]; then
+  echo "${YELLOW}No Cache option is ON ${YELLOW}"
+fi
+
+sleep 1
+
+echo "${GREEN}Build commande : #docker build --target DEBIAN_BUILD ${CACHE} -t php-symfony-apache:${FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_FULL_PHP_VERSION} --build-arg ${DOCKER_ARG_PHP_IMAGE_VERSION} --build-arg ${DOCKER_ARG_SYMFONY_VERSION} . ${GREEN}"
 
 set -x
-docker build -t php-symfony-apache:"${FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_PHP_IMAGE_VERSION}" --build-arg "${DOCKER_ARG_SYMFONY_VERSION}" .
+docker build --target DEBIAN_BUILD ${CACHE} -t php-symfony-apache:"${FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_FULL_PHP_VERSION}" --build-arg "${DOCKER_ARG_PHP_IMAGE_VERSION}" --build-arg "${DOCKER_ARG_SYMFONY_VERSION}" .
