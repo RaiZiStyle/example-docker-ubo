@@ -66,7 +66,7 @@ docker build --file test/dockerfile_sdk_more_real .  --no-cache # Doesnt work be
 > it's the same dockerfile, expept the ARG are either before, or after the from.
 
 # Issues : 
-Not possible to parse variable in the dockerfile.    
+1. Not possible to parse variable in the dockerfile.    
 I wanted to only give one variable with `--build-arg FULL_BUILD_VERSION=8.1.19`, and do :    
 ```Dockerfile
 RUN PHP_IMAGE_VERSION=$(echo "$PHP_BUILD_VERSION" | cut -d. -f1,2) && \
@@ -81,7 +81,7 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 </br>
 
-- [ ] `BuildKit` is the builder for docker.     
+2. `BuildKit` is the builder for docker.     
 > **BuildKit only builds the stages that the target stage depends on.**     
 
 So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
@@ -95,6 +95,6 @@ So if we build as usual, `BuildKit` will see that the `FROM debian` is not usefu
 
 </br>
 
-- [ ] Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
+3. Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
 Might be better to change it. We might need an other arg in the `Builder.sh` to do so.
 > COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
