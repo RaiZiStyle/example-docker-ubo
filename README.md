@@ -1,20 +1,30 @@
 # How to build the image : 
 
-```
+Without the builder
+```bash
 docker build -t php-symfony-apache:8.1.19 --build-arg FULL_PHP_VERSION=8.1.19  --build-arg PHP_IMAGE_VERSION=8.1 . # Build for php version 8.2.1
 docker build  -t php-symfony-apache:8.1.19 --build-arg PHP_BUILD_VERSION=8.1.19 . --no-cache # Build for php version 8.1.19
 ```
+
+With the builder : 
+```bash
+./builder.sh -p 8.1.19
+./builder.sh --php-full-version=8.1.19 
+./builder.sh -h # Show Help
+```
+
+
 
 
 # Todo : 
 
 - [x] Create dynamic env variable
   - Use via `ENV PHP_VERSION=${FULL_PHP_VERSION}` and $FULL_PHP_VERSION is given as a docker build arg (--build-arg FULL_PHP_VERSION=8.1.19)    
-- [ ] Make `FROM php-xx` to use the var parsed
+- [x] Make `FROM php-xx` to use the var parsed
 
 # Improuvements : 
 
-Might be better to use a `Makefile` or a `.sh` to build the `Dockerfile` since we can't parse variable in the `Dockerfile`
+1. Might be better to use a `Makefile` or a `.sh` to build the `Dockerfile` since we can't parse variable in the `Dockerfile`
 Somethink like `./builder FULL_PHP_VERSION=8.1.19`   
 And the script will do somethink like :    
 ```sh
