@@ -56,14 +56,7 @@ docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=
 
 </br>
 
-4. [ ] Might be usless to check variable in dockerfile because it doesn't work like intended (See `test/dockerfile_sdk` for full example)
-> it's so weird...
-```bash
-docker build   --build-arg BUILD_ARGUMENT_ENV=dev --file test/dockerfile_sdk_issue .  --no-cache # Doesnt work
-docker build   --build-arg BUILD_ARGUMENT_ENV=dev --file test/dockerfile_sdk_work .  --no-cache # Work
-docker build --file test/dockerfile_sdk_more_real .  --no-cache # Doesnt work because of BuildKit. With either --build-arg or not
-```
-> it's the same dockerfile, expept the ARG are either before, or after the from.
+
 
 # Issues : 
 1. Not possible to parse variable in the dockerfile.    
@@ -82,7 +75,7 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 </br>
 
-2. `BuildKit` is the builder for docker.     
+2. ~~`BuildKit` is the builder for docker.~~ Outdate 
 > **BuildKit only builds the stages that the target stage depends on.**     
 
 So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     

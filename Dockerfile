@@ -1,36 +1,16 @@
 # Needed before the from in order to be used by the `FROM`
-ARG FULL_PHP_VERSION=-1
-ARG PHP_IMAGE_TAG_VERSION=-1
-ARG SYMFONY_VERSION=-1
+ARG FULL_PHP_VERSION=0
+ARG PHP_IMAGE_TAG_VERSION=0
+ARG SYMFONY_VERSION=1
 
 # Used to test if variable is set via --build-arg
 # Can't run `RUN` without a from.
-FROM debian:12-slim as DEBIAN_BUILD
+# FROM debian:12-slim as DEBIAN_BUILD
 # Nom du mainteneur
-LABEL maintainer="arthur.guyotpremel@gmail.com"
 
-# Check if full version of php is set
-# FIXME: I don't understand why this doesn't work
-RUN if [ "$FULL_PHP_VERSION" == "-1" ]; then echo "Set PHP_BUILD_VERSION in docker build-args like --build-arg FULL_PHP_VERSION=<Major.Minor.bugFix>" && exit 2; \
-    else echo "FULL_PHP_VERSION is set"; \
-    fi
-
-# Check if image version of php is set
-RUN if [ "$PHP_IMAGE_TAG_VERSION" == "-1" ]; then echo "Set PHP_IMAGE_TAG_VERSION in docker build-args like --build-arg PHP_IMAGE_TAG_VERSION=<Major.Minor>" && exit 2; \
-    else echo "PHP_IMAGE_TAG_VERSION is set"; \
-    fi
-
-# Check if full version of php is set
-RUN if [ "${SYMFONY_VERSION}" == "-1" ]; then echo "Set SYMFONY_VERSION in docker build-args like --build-arg SYMFONY_VERSION=<Major.Minor>" && exit 2; \
-    else echo "SYMFONY_VERSION is set"; \
-    fi
-
-# FIXME: Doesn always show...
-RUN  echo  "FULL php version is : $FULL_PHP_VERSION"
-RUN echo "PHP version for tag is : $PHP_IMAGE_TAG_VERSION"
-RUN echo "Symfony version for tag is : $SYMFONY_VERSION"
 
 FROM php:${PHP_IMAGE_TAG_VERSION}-apache as PHP_APACHE_INSTALL
+LABEL maintainer="arthur.guyotpremel@gmail.com"
 
 RUN apt update -y
 
@@ -87,8 +67,12 @@ RUN a2dissite 000-default.conf
 RUN rm -r $APP_HOME
 
 # create document root, fix permissions for www-data user and change owner to www-data
-RUN mkdir -p $APP_HOME/public && \
-    mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
+# RUN mkdir -p $APP_HOME/public && \
+#     mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
+#     && usermod -o -u $HOST_UID $USERNAME -d /home/$USERNAME \
+#     && groupmod -o -g $HOST_GID $USERNAME \
+#     && chown -R ${USERNAME}:${USERNAME} $APP_HOME
+RUN mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
     && usermod -o -u $HOST_UID $USERNAME -d /home/$USERNAME \
     && groupmod -o -g $HOST_GID $USERNAME \
     && chown -R ${USERNAME}:${USERNAME} $APP_HOME
@@ -134,11 +118,13 @@ USER ${USERNAME}
 
 # Create an empty Symfony project
 RUN composer create-project symfony/skeleton:"${SYMFONY_VERSION}" .
-RUN composer require webapp
+# RUN composer require webapp
+
+ENV SYMFONY_VERSION=${SYMFONY_VERSION} 
 
 
 # copy source files
-COPY --chown=${USERNAME}:${USERNAME} . $APP_HOME/
+# COPY --chown=${USERNAME}:${USERNAME} . $APP_HOME/
 
 # install all PHP dependencies
 # RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; then COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress; \
