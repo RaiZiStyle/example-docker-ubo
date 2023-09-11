@@ -3,19 +3,14 @@ ARG FULL_PHP_VERSION
 ARG PHP_IMAGE_TAG_VERSION=0
 ARG SYMFONY_VERSION=1
 
-# Used to test if variable is set via --build-arg
-# Can't run `RUN` without a from.
-# FROM debian:12-slim as DEBIAN_BUILD
-# Nom du mainteneur
-
-
 FROM php:${PHP_IMAGE_TAG_VERSION}-apache as PHP_APACHE_INSTALL
+ARG FULL_PHP_VERSION
 LABEL maintainer="arthur.guyotpremel@gmail.com"
 
 RUN apt update -y
 
 # Use to have a environement variable name `PHP_VERSION` in the container
-ENV FULL_PHP_VERSION=${FULL_PHP_VERSION:-v8.3}
+ENV FULL_PHP_VERSION=${FULL_PHP_VERSION:-DEFAULT_VERSION}
 # if --build-arg BUILD_DEVELOPMENT=1, set NODE_ENV to 'development' or set to null otherwise.
 # ENV FULL_PHP_VERSION=${BUILD_DEVELOPMENT:+development}
 # if NODE_ENV is null, set it to 'production' (or leave as is otherwise).
