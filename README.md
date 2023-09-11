@@ -13,13 +13,13 @@ With the builder :
 ./builder.sh -h # Show Help
 ```
 
-
+> Note : The builder is just here to parse arg so that people don't have to give the full docker build arg.
 
 
 # Todo : 
 
-- [x] Create dynamic env variable
-  - Use via `ENV PHP_VERSION=${FULL_PHP_VERSION}` and $FULL_PHP_VERSION is given as a docker build arg (--build-arg FULL_PHP_VERSION=8.1.19)    
+- [x] Make a `FROM php:${Variable}` dynamic
+- [x] Create dynamic env variable 
 - [x] Make `FROM php-xx` to use the var parsed
 - [ ] Make the image work with `Symfony`
 - [ ] Verify if the file used by `systemsdk/docker-apache-php-symfony` are correct. (file in `docker/*`)
@@ -27,7 +27,12 @@ With the builder :
 # Improuvements : 
 
 1. [x] Might be better to use a `Makefile` or a `.sh` to build the `Dockerfile` since we can't parse variable in the `Dockerfile`
-Somethink like `./builder FULL_PHP_VERSION=8.1.19`   
+> Somethink like 
+>> `./builder -p 8.1.19`
+>
+> and will result in a docker commande like 
+>>`docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=8.1.19`
+
 And the script will do somethink like :    
 ```sh
 # Vérifier si le premier argument est vide
@@ -47,9 +52,6 @@ docker build --build-arg PHP_IMAGE_TAG_VERSION=8.1 --build-arg FULL_PHP_VERSION=
 > The script will parse the FULL_PHP_VERSION and exctract <PHP_IMAGE_TAG_VERSION> used for the FROM php-${PHP_IMAGE_TAG_VERSION}   
 
 </br>
-
-
-
 </br>
 
 3. [x] Make an option for --no-cache for docker
@@ -75,23 +77,21 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 </br>
 
-2. ~~`BuildKit` is the builder for docker.~~ Outdate 
+2. ~~`BuildKit` is the builder for docker.~~ **Outdate** 
 > **BuildKit only builds the stages that the target stage depends on.**     
 
-So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly     
+~~So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly~~     
 
-> **Solution 1 :** We can trick the builder to force the specific stage to build, AKAK DEBIAN_BUILD from `FROM debian:12-slim as DEBIAN_BUILD`. So we build like so `docker build --target DEBIAN_BUILD`.    
->> :warning: This doesn't fully work because it only limit to the target, and don't do the other `FROM`
+> ~~**Solution 1 :** We can trick the builder to force the specific stage to build, AKAK DEBIAN_BUILD from `FROM debian:12-slim as DEBIAN_BUILD`. So we build like so `docker build --target DEBIAN_BUILD`.~~    
+>> ~~:warning: This doesn't fully work because it only limit to the target, and don't do the other `FROM`~~     
 
-> **Solution 2 :** Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but : 
-> The legacy builder is deprecated and will be removed in a future release.     
-> BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable. 
+> ~~**Solution 2 :** Or, we could use the old BuildKit with `DOCKER_BUILDKIT=0`, but :~~ 
+> ~~The legacy builder is deprecated and will be removed in a future release.~~     
+> ~~BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0 environment-variable.~~ 
 
-> **Solution 3 : ** Remove the checking variable in the dockerfile.
+> ~~**Solution 3 : ** Remove the checking variable in the dockerfile.~~
 
-
-
-**Workaround** : We might be able to use the `COPY --from=`. 
+~~**Workaround** : We might be able to use the `COPY --from=`. ~~
 
 
 </br>
