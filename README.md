@@ -77,8 +77,8 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 </br>
 
-2. ~~`BuildKit` is the builder for docker.~~ **Outdate** 
-> **BuildKit only builds the stages that the target stage depends on.**     
+2. **Outdate** : ~~`BuildKit` is the builder for docker.~~ 
+> ~~**BuildKit only builds the stages that the target stage depends on.**~~     
 
 ~~So if we build as usual, `BuildKit` will see that the `FROM debian` is not useful, and will not build the layer. And therefor, will not check if `--build-arg` is set correctly~~     
 
@@ -91,12 +91,12 @@ So we can't parse FULL_PHP_VERSION to get only Major.Minor
 
 > ~~**Solution 3 : ** Remove the checking variable in the dockerfile.~~
 
-~~**Workaround** : We might be able to use the `COPY --from=`. ~~
+**Workaround** : We might be able to use the `COPY --from=`. 
 
 
 </br>
 
-3. Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
+1. Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
 Might be better to change it. We might need an other arg in the `Builder.sh` to do so.
 > COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
