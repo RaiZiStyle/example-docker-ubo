@@ -1,0 +1,15 @@
+# Good example on how to use Env & Arg and used them in a from
+# Build : docker build --build-arg CONT_IMG_VER=v2.0.1 . -> echo "v2.0.1"
+# Build : docker build . -> echo "v1.0.0"
+
+ARG CONT_IMG_VER
+FROM ubuntu:${CONT_IMG_VER}
+
+# The ARG here is needed because otherwise the ${CONT_IMG_VER} is empty.
+# If you remove this ARG, env variable "CONT_IMG_VER" will always be "DEFAULT_VERSION"
+ARG CONT_IMG_VER
+# FROM ubuntu:23.04
+# FROM ubuntu:21.04
+ENV CONT_IMG_VER=${CONT_IMG_VER:-DEFAULT_VERSION}
+RUN echo $CONT_IMG_VER
+

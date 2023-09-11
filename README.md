@@ -99,3 +99,10 @@ So if we build as usual, `BuildKit` will see that the `FROM debian` is not usefu
 3. Instruction from `systemsdk/docker-apache-php-symfony` use the latest composer.  
 Might be better to change it. We might need an other arg in the `Builder.sh` to do so.
 > COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+
+# Note for docker :
+
+The ${variable_name} syntax also supports a few of the standard bash modifiers as specified below:
+${variable:-word} indicates that if variable is set then the result will be that value. If variable is not set then word will be the result.
+${variable:+word} indicates that if variable is set then word will be the result, otherwise the result is the empty string.
